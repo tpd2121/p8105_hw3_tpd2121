@@ -10,7 +10,8 @@ library(tidyverse)
 library(ggridges)
 ```
 
-##Problem 2
+## Problem 2
+
 Loading the dataset
 ```{r dataset}
 demography = read.csv("./nhanes_covar.csv", 
@@ -29,12 +30,18 @@ complete_acc =
   full_join(demography, acc_data, by = "SEQN") %>% 
   filter(age >21) %>% 
   mutate(
-    SEQN = as.numeric(SEQN),
-    sex = as.factor(sex),
-    age = as.numeric(age),
-    BMI = as.double(BMI),
-    education = as.factor(education)
-    #mutate as.dbl for the min1:min94
+    sex = as.character(sex),
+    sex = case_match(
+      sex,
+      "1" ~ "male",
+      "2" ~ "female"), 
+    education = as.character(education),
+    education = case_match(
+      education,
+      "1" ~ "Less than highschool",
+      "2" ~ "Highschool equivalent",
+      "3" ~ "More than highschool"
+    )
   )
 ```
 
@@ -48,7 +55,6 @@ complete_acc %>%
 ```
 
 ```{r visualization}
-#confused on how to present the data
 complete_acc %>% 
   group_by(sex, education, age) %>% 
   ggplot(aes(x = education, y = age, color = sex)) + 
@@ -57,9 +63,31 @@ complete_acc %>%
     title = "Age distribution based on education and sex")
 ```
 
-Total activity over the day
+**Total activity over the day**
 
+```{r total}
+total_df = 
+  complete_acc %>% 
+  mutate(
+    act_total = rowSums(across(c(min1:min1440)))
+    )%>% 
+  select(SEQN:education, act_total)
+```
 
-3 panel plot
+```{r total_plot}
+ggplot(total_df, aes(x = age, y = act_total, color = sex)) + 
+  geom_point(alpha = .5) +
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ education) + 
+  theme_bw() +
+  labs(
+    title = "Total physical activity based on age, education, and sex",
+    y = "Total physical activity per day")
+#do facet_grid (sex ~ education) if want to make 6 panel
+```
+
+Based on the plot, we can see that there is a difference in the total activity based on age, education, and sex. For people who had education lower than highschool equivalent, the highest total activity per day is recorded at 30-50 years old group and decline afterwards. Female are shown to have higher activies per day compared to male in this group. People who have highschool equivalent education generally show decreasing trend of physical activity as they got older. This decline is more pronounced in female compared to male participants. There's a jump in activities recorded around 50 to 60 years of age, before declining again. Lastly, in the people with higher than highschool education, female participants' have plateauing activities until age 60 before declining. In male participants, there's a slight dip from around age 20s to 40s, before slightly jumping up and declining again at around age 50. 
+
+**3 panel plot**
 
 ##Problem 3
