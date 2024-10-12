@@ -12,7 +12,7 @@ library(ggridges)
 
 ## Problem 2
 
-Loading the dataset
+2A. Loading the dataset
 ```{r dataset}
 demography = read.csv("./nhanes_covar.csv", 
                       skip = 4) %>% 
@@ -45,7 +45,7 @@ complete_acc =
   )
 ```
 
-Creating table and visualization for gender, education, and age
+2B. Creating table and visualization for gender, education, and age
 ```{r table}
 complete_acc %>% 
   group_by(sex, education) %>% 
@@ -63,8 +63,7 @@ complete_acc %>%
     title = "Age distribution based on education and sex")
 ```
 
-**Total activity over the day**
-
+2C. Total activity over the day
 ```{r total}
 total_df = 
   complete_acc %>% 
@@ -88,7 +87,7 @@ ggplot(total_df, aes(x = age, y = act_total, color = sex)) +
 
 Based on the plot, we can see that there is a difference in the total activity based on age, education, and sex. For people who had education lower than highschool equivalent, the highest total activity per day is recorded at 30-50 years old group and decline afterwards. Female are shown to have higher activies per day compared to male in this group. People who have highschool equivalent education generally show decreasing trend of physical activity as they got older. This decline is more pronounced in female compared to male participants. There's a jump in activities recorded around 50 to 60 years of age, before declining again. Lastly, in the people with higher than highschool education, female participants' have plateauing activities until age 60 before declining. In male participants, there's a slight dip from around age 20s to 40s, before slightly jumping up and declining again at around age 50. 
 
-**3 panel plot**
+2D. 3 panel plot
 Accelerometer data allows the inspection activity over the course of the day. Make a three-panel plot that shows the 24-hour activity time courses for each education level and use color to indicate sex. Describe in words any patterns or conclusions you can make based on this graph; including smooth trends may help identify differences.
 x axis = minutes, y axis = mean activity, color line = sex, panel = education
 
@@ -115,4 +114,40 @@ ggplot(timecourse_df, aes(x = minutes, y = activity, color = sex)) +
 #pretty sure have to convert the minutes to hours, then plot the hours to the data
 ```
 
-##Problem 3
+## Problem 3
+
+3A. Load and clean the data
+```{r load dataset}
+jan_2020 = read.csv("./Jan 2020 Citi.csv") %>% 
+  janitor::clean_names() %>%
+  mutate(time = "jan_20") %>% 
+  select(time, everything())
+
+jan_2024 = read.csv("./Jan 2024 Citi.csv") %>% 
+  janitor::clean_names() %>%
+  mutate(time = "jan_24") %>% 
+  select(time, everything())
+
+jul_2020 = read.csv("./July 2020 Citi.csv") %>% 
+  janitor::clean_names() %>%
+  mutate(time = "jul_20") %>% 
+  select(time, everything())
+
+jul_2024 = read.csv("./July 2024 Citi.csv") %>% 
+  janitor::clean_names() %>%
+  mutate(time = "jul_24") %>% 
+  select(time, everything())
+
+citibike_df = 
+  bind_rows(jan_2020, jan_2024, jul_2020, jul_2024)
+```
+There are 4 data set in the citibike folder. The January 2020 data contains `r nrow(jan_2020)`, while the January 2024 data contains `r nrow(jan_2024)` observations. Meanwhile, the July 2020 data contains `r nrow(jul_2020)` while the July 2024 contains `r nrow(jul_2024)` observations. The variables on all data frame are quite similar, which are `r names(jan_2020)`, with the variable `time` is an additional variable I created to help with merging the data into `citibike_df`. 
+
+3B. Reader friendly table
+
+
+3C. 5 popular stations
+
+3D. Plot
+
+3E. Electric bikes
