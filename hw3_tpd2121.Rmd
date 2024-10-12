@@ -1,0 +1,25 @@
+---
+title: "hw3_tpd2121"
+output: github_document
+date: "2024-10-12"
+---
+
+Initializing the packages
+```{r initial}
+library(tidyverse)
+```
+
+##Problem 2
+Loading the dataset
+```{r dataset}
+demography = read.csv("./nhanes_covar.csv")
+acc_data = read.csv("./nhanes_accel.csv")
+```
+
+Cleaning the dataset
+```{r cleaning}
+
+```
+
+
+##Problem 3
