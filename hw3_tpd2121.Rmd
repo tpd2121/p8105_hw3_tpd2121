@@ -7,19 +7,50 @@ date: "2024-10-12"
 Initializing the packages
 ```{r initial}
 library(tidyverse)
+library(ggridges)
 ```
 
 ##Problem 2
 Loading the dataset
 ```{r dataset}
-demography = read.csv("./nhanes_covar.csv")
+demography = read.csv("./nhanes_covar.csv", 
+                      skip = 4) %>% 
+  drop_na()
 acc_data = read.csv("./nhanes_accel.csv")
 ```
 
 Cleaning the dataset
 ```{r cleaning}
+#checking data
+anti_join(demography, acc_data)
 
+#joining the dataset
+complete_acc = 
+  full_join(demography, acc_data, by = "SEQN") %>% 
+  filter(age >21) %>% 
+  mutate(
+    SEQN = as.numeric(SEQN),
+    sex = as.factor(sex),
+    age = as.numeric(age),
+    BMI = as.double(BMI),
+    education = as.factor(education)
+    #mutate as.dbl for the min1:min94
+  )
 ```
+
+Creating table and visualization for gender, education, and age
+```{r table}
+complete_acc %>% 
+  group_by(sex, education) %>% 
+  summarize(count = n()) %>% 
+  pivot_wider(names_from = "education", values_from = "count") %>% 
+  knitr::kable()
+```
+
+```{r visualization}
+#confused on how to present the data
+```
+
 
 
 ##Problem 3
