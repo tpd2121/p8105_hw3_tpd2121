@@ -144,9 +144,17 @@ citibike_df =
 There are 4 data set in the citibike folder. The January 2020 data contains `r nrow(jan_2020)`, while the January 2024 data contains `r nrow(jan_2024)` observations. Meanwhile, the July 2020 data contains `r nrow(jul_2020)` while the July 2024 contains `r nrow(jul_2024)` observations. The variables on all data frame are quite similar, which are `r names(jan_2020)`, with the variable `time` is an additional variable I created to help with merging the data into `citibike_df`. 
 
 3B. Reader friendly table
-
+```{r reader table}
+citibike_df %>% 
+  group_by(time, member_casual) %>% 
+  summarize(count = n()) %>% 
+  pivot_wider(names_from = "time", values_from = "count") %>% 
+  knitr::kable()
+```
+From this table, we can see that in citibike members have higher ridership compared to casual riders from these 4 timepoints. We also see that while member ridership are increasing, the casual riders have a steep drop from `jul_20` to `jan_24`. 
 
 3C. 5 popular stations
+
 
 3D. Plot
 
